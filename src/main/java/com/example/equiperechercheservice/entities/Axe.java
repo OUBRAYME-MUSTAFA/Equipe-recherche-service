@@ -1,5 +1,6 @@
 package com.example.equiperechercheservice.entities;
 
+import com.example.equiperechercheservice.entities.Equipe;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;

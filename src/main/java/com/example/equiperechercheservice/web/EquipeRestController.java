@@ -1,22 +1,30 @@
 package com.example.equiperechercheservice.web;
 
+import com.example.equiperechercheservice.feign.AxeRestClient;
 import com.example.equiperechercheservice.entities.Axe;
 import com.example.equiperechercheservice.entities.Equipe;
 import com.example.equiperechercheservice.repository.AxeRepository;
 import com.example.equiperechercheservice.repository.EquipeRepository;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.web.bind.annotation.*;
+import com.example.equiperechercheservice.feign.ChercheurRestCient;
 
 @RestController
+@EnableFeignClients
 public class EquipeRestController {
 
 
     private AxeRepository axeRepository;
     private EquipeRepository equipeRepository;
 
-    public EquipeRestController(EquipeRepository equipeRepository , AxeRepository axeRepository) {
-        this.equipeRepository = equipeRepository;
-        this.axeRepository = axeRepository;
+    private ChercheurRestCient chercheurRestCient;
+    private AxeRestClient axeRestClient;
 
+    public EquipeRestController(AxeRepository axeRepository, EquipeRepository equipeRepository, ChercheurRestCient chercheurRestCient, AxeRestClient axeRestClient) {
+        this.axeRepository = axeRepository;
+        this.equipeRepository = equipeRepository;
+        this.chercheurRestCient = chercheurRestCient;
+        this.axeRestClient = axeRestClient;
     }
 
     @GetMapping(path = "/fullEquipe/{id}")
@@ -36,6 +44,8 @@ public class EquipeRestController {
     @PostMapping("addEquipe")
     public Equipe addEquipe(@RequestBody Equipe equipe){
 
+       // equipe.setResponsable(chercheurRestCient.getChercheurByName(equipe.getResponsable().getName()));
+
         return equipeRepository.save(equipe);
 
     }
@@ -43,10 +53,8 @@ public class EquipeRestController {
     @PutMapping("addAxe/{id}")
     public Equipe addAxe(@RequestBody Axe axe, @PathVariable long id) {
         Equipe equipe = equipeRepository.findById(id).get();
-        //Axe newAxe = axeRepository.findById(axe.getId()).get()
 
-        Long IdAxe = axeRepository.findByName(axe.getName()).getId();
-        Axe newAxe = axeRepository.findById(IdAxe).get();
+        Axe newAxe = axeRepository.getFindByName(axe.getName());
 
         equipe.getAxe_list().add(newAxe);
         newAxe.getEquipe_list().add(equipe);

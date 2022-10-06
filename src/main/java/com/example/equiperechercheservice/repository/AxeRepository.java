@@ -9,5 +9,7 @@ public interface AxeRepository extends JpaRepository<Axe, Long> {
     Axe getAxeById(Long axeID);
 
     Axe findByName(String name);
+
+    Axe getFindByName(String name);
     //Collection<Axe> findById(Long id);
 }
