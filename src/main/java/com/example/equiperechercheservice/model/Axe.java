@@ -1,4 +1,4 @@
-package com.example.equiperechercheservice.entities;
+package com.example.equiperechercheservice.model;
 
 import com.example.equiperechercheservice.entities.Equipe;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,10 +6,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,9 +24,14 @@ public class Axe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
     private String name;
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    @ManyToMany
-    private List<Equipe> equipe_list = new ArrayList<Equipe>();
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            },
+            mappedBy = "axe_list")
+    @JsonIgnore
+    private Set<Equipe> equipe_list = new HashSet<>();
 
     public void setAxeName(String name) {
         this.name = name;

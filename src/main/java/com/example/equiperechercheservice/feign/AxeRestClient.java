@@ -1,6 +1,6 @@
 package com.example.equiperechercheservice.feign;
 
-import com.example.equiperechercheservice.entities.Axe;
+import com.example.equiperechercheservice.model.Axe;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
