@@ -8,8 +8,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 @FeignClient(name = "LABO-SERVICE")
 public interface AxeRestClient {
     @GetMapping(path = "/axes/{id}")
-    public Axe getAxesById(@PathVariable("id")Long id);
+    public Axe getAxeById(@PathVariable("id")Long id);
 
     @GetMapping(path = "/getAxes/{name}")
     Axe getAxeByName(@PathVariable("name")String name);
+
 }

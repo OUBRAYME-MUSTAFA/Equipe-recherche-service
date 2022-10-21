@@ -21,17 +21,17 @@ import java.util.Set;
 @ToString
 public class Axe {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id ;
     private String name;
+
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
             },
-            mappedBy = "axe_list")
+            mappedBy = "axes")
     @JsonIgnore
-    private Set<Equipe> equipe_list = new HashSet<>();
+    private List<Equipe> equipe_list;
 
     public void setAxeName(String name) {
         this.name = name;

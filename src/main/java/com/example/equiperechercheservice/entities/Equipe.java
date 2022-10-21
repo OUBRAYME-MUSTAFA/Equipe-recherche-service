@@ -3,10 +3,8 @@ package com.example.equiperechercheservice.entities;
 
 import com.example.equiperechercheservice.model.Axe;
 import com.example.equiperechercheservice.model.Chercheur;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import com.example.equiperechercheservice.model.Labo;
+import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -28,6 +26,8 @@ public class Equipe {
     private Long responsableId;
     @Transient
     private Chercheur responsable;
+
+
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
@@ -36,22 +36,29 @@ public class Equipe {
     @JoinTable(name = "equipes_axes",
             joinColumns = { @JoinColumn(name = "equipe_id") },
             inverseJoinColumns = { @JoinColumn(name = "axe_id") })
-    private List<Axe> axe_list = new ArrayList<>();
+    private List<Axe> axes = new ArrayList<>();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY,
+            cascade = {
+                    CascadeType.PERSIST,
+                    CascadeType.MERGE
+            })
     @JoinTable(name = "Equipe_member",
             joinColumns = { @JoinColumn(name = "equipe_id") },
             inverseJoinColumns = { @JoinColumn(name = "member_id") })
     private List<Chercheur> Member = new ArrayList<>();
 
+    @Transient
+    private Labo labo;
+    private Long LaboID;
 
 
 
     //********************************************
     public void addAxe( Axe axe){
-        this.axe_list.add(axe);
+        this.axes.add(axe);
     }
-    public List<Axe> getAxes(){return this.axe_list;}
+    public List<Axe> getAxes(){return this.axes;}
 
     public Equipe(Long id,String acro_equipe, String intitule, Long responsableId) {
         this.acro_equipe = acro_equipe;
@@ -62,5 +69,13 @@ public class Equipe {
 
     public void addMember(Chercheur chercheur) {
         this.Member.add(chercheur);
+    }
+
+    public void removeAxe(long axeId) {
+        Axe axe = this.axes.stream().filter(t -> t.getId() == axeId).findFirst().orElse(null);
+        if (axe != null) {
+            this.axes.remove(axe);
+            axe.getEquipe_list().remove(this);
+        }
     }
 }
