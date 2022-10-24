@@ -1,6 +1,7 @@
 package com.example.equiperechercheservice.model;
 
 import com.example.equiperechercheservice.entities.Equipe;
+import com.sun.org.apache.bcel.internal.generic.RETURN;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,7 +27,7 @@ public class Chercheur {
                     CascadeType.PERSIST,
                     CascadeType.MERGE
             },
-            mappedBy = "Member")
+            mappedBy = "member")
     @JsonIgnore
     private List<Equipe> equipes;
 
@@ -38,4 +39,7 @@ public class Chercheur {
         this.name =name;
     }
 
+    public long getId(Chercheur chercheur) {
+        return this.id;
+    }
 }

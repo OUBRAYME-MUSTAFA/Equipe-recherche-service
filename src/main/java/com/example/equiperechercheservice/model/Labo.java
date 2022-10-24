@@ -7,6 +7,9 @@ import lombok.ToString;
 
 import javax.persistence.Id;
 import javax.persistence.Transient;
+import java.util.HashSet;
+import java.util.Set;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,5 +22,6 @@ public class Labo {
     private Long ResponsableId;
     @Transient
     private Chercheur responsable;
+    private Set<Long> equipes_ID = new HashSet<>();
 
 }

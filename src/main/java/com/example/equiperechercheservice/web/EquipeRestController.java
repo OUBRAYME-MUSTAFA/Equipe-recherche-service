@@ -25,8 +25,8 @@ public class EquipeRestController {
     private ChercheurRestClient chercheurRestClient;
     private AxeRestClient axeRestClient;
 
-    public EquipeRestController(  AxeRestClient axeRestClient, EquipeRepository equipeRepository,ChercheurRestClient chercheurRestClient) {
 
+    public EquipeRestController(EquipeRepository equipeRepository, ChercheurRestClient chercheurRestClient, AxeRestClient axeRestClient) {
         this.equipeRepository = equipeRepository;
         this.chercheurRestClient = chercheurRestClient;
         this.axeRestClient = axeRestClient;
@@ -72,9 +72,16 @@ public class EquipeRestController {
 //                }
                 pi.setEquipe_list(null);
             });
-                    equipe.getMember().forEach(pi->{
+            equipe.getMember().forEach(pi->{
                         pi.setEquipes(null);
                     });
+            if (equipe.getLaboID() != null ){
+
+                Labo lb =axeRestClient.getFullLabo(equipe.getLaboID());
+                if(lb.getEquipes_ID().contains(equipe.getId()))
+                equipe.setLabo(lb);
+            }
+
 
 
         });
@@ -86,6 +93,8 @@ public class EquipeRestController {
     public ResponseEntity<Equipe> addEquipe(@RequestBody Equipe equipe){
         Chercheur chercheur = chercheurRestClient.getChercheurById(equipe.getResponsable().getId());
         Equipe equipe1 =new Equipe(equipe.getId(),equipe.getAcro_equipe(), equipe.getIntitule(),chercheur.getId());
+        if(equipe.getLabo() != null)
+        { equipe1.setLaboID(equipe.getLabo().getId());}
         equipeRepository.save(equipe1);
         equipe.getAxes().forEach(pi->{
             Axe newAxe = axeRestClient.getAxeById(pi.getId());
@@ -132,22 +141,36 @@ public class EquipeRestController {
 //        Chercheur chercheur = chercheurRestClient.getChercheurByName(labo.getResponsable().getName());
 //        labo.setResponsableId(chercheur.getId());
 //        return laboRepository.save(labo);
+
+
         return addEquipe(equipe);
 
     }
 
     @PutMapping("addLabo/{id}")
-    public Equipe addLabo(@RequestBody Labo labo, @PathVariable long id) {
+    public void addLabo(@RequestBody Labo labo, @PathVariable long id) {
         Equipe equipe = equipeRepository.findById(id).get();
         //Axe newAxe = axeRepository.findById(axe.getId()).get()
 
         equipe.setLaboID(labo.getId());
 
         equipeRepository.save(equipe);
-        return equipe;
+
+    }
+    @PutMapping("deleteLabo/{code}")
+    void deleteLabo(@PathVariable  long code){
+       Equipe ep = equipeRepository.findById(code).get();
+
+       ep.setLaboID(null);
+        equipeRepository.save(ep);
+
     }
     @DeleteMapping(path = "/{code}")
     public void deleteEquipe(@PathVariable (name = "code") long code ) {
+
+        Equipe equipe = equipeRepository.findById(code).get();
+        if (equipe.getLaboID() != null)
+            axeRestClient.deleteEquipe(equipe.getLaboID() , code);
 
         equipeRepository.deleteById(code);
     }

@@ -27,7 +27,6 @@ public class Equipe {
     @Transient
     private Chercheur responsable;
 
-
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
                     CascadeType.PERSIST,
@@ -46,11 +45,11 @@ public class Equipe {
     @JoinTable(name = "Equipe_member",
             joinColumns = { @JoinColumn(name = "equipe_id") },
             inverseJoinColumns = { @JoinColumn(name = "member_id") })
-    private List<Chercheur> Member = new ArrayList<>();
+    private List<Chercheur> member = new ArrayList<>();
 
     @Transient
     private Labo labo;
-    private Long LaboID;
+    private Long laboID;
 
 
 
@@ -60,15 +59,16 @@ public class Equipe {
     }
     public List<Axe> getAxes(){return this.axes;}
 
-    public Equipe(Long id,String acro_equipe, String intitule, Long responsableId) {
+    public Equipe(Long id,String acro_equipe, String intitule, Long responsableId ) {
         this.acro_equipe = acro_equipe;
         this.intitule = intitule;
         this.responsableId = responsableId;
         this.id=id;
+
     }
 
     public void addMember(Chercheur chercheur) {
-        this.Member.add(chercheur);
+        this.member.add(chercheur);
     }
 
     public void removeAxe(long axeId) {
