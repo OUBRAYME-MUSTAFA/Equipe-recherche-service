@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.equiperechercheservice.feign.ChercheurRestClient;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -88,6 +89,17 @@ public class EquipeRestController {
         return list__;
     }
 
+    @GetMapping(path = "/pureEquipes")
+    public List<Equipe> getPureEquipe()
+    {
+        List<Equipe> list__ = new ArrayList<>();
+        equipeRepository.findAll().forEach(equipe -> {
+            if(equipe.getLaboID() == null)
+                list__.add(getEquipeById(equipe.getId()));
+        });
+        return list__;
+    }
+
 
     @PostMapping("/addEquipe")
     public ResponseEntity<Equipe> addEquipe(@RequestBody Equipe equipe){
@@ -137,11 +149,6 @@ public class EquipeRestController {
 
     @PutMapping("update")
     public ResponseEntity<Equipe> updateEquipe(@RequestBody Equipe equipe){
-
-//        Chercheur chercheur = chercheurRestClient.getChercheurByName(labo.getResponsable().getName());
-//        labo.setResponsableId(chercheur.getId());
-//        return laboRepository.save(labo);
-
 
         return addEquipe(equipe);
 
