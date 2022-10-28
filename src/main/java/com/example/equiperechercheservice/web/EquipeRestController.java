@@ -106,6 +106,7 @@ public class EquipeRestController {
         Chercheur chercheur = chercheurRestClient.getChercheurById(equipe.getResponsable().getId());
         chercheur.setId(equipe.getResponsable().getId());
         Equipe equipe1 =new Equipe(equipe.getId(),equipe.getAcro_equipe(), equipe.getIntitule(),chercheur.getId());
+        System.out.println(" ************ sent = "+chercheur.getId()+" get = "+equipe1.getResponsableId());
         if(equipe.getLabo() != null)
         { equipe1.setLaboID(equipe.getLabo().getId());}
         equipeRepository.save(equipe1);
