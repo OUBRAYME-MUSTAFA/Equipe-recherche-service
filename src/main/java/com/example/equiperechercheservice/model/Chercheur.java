@@ -19,8 +19,8 @@ import java.util.List;
 public class Chercheur {
     @Id
     private Long id ;
-    private String name;
-    private String role;
+    private String nom;
+    private String prenom ;
 
     @ManyToMany(fetch = FetchType.LAZY,
             cascade = {
@@ -36,7 +36,7 @@ public class Chercheur {
         equipe.getMember().add(this);
     }
     public void setChercheurName(String name) {
-        this.name =name;
+        this.nom =name;
     }
 
     public long getId(Chercheur chercheur) {

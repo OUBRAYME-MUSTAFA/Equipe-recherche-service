@@ -104,6 +104,7 @@ public class EquipeRestController {
     @PostMapping("/addEquipe")
     public ResponseEntity<Equipe> addEquipe(@RequestBody Equipe equipe){
         Chercheur chercheur = chercheurRestClient.getChercheurById(equipe.getResponsable().getId());
+        chercheur.setId(equipe.getResponsable().getId());
         Equipe equipe1 =new Equipe(equipe.getId(),equipe.getAcro_equipe(), equipe.getIntitule(),chercheur.getId());
         if(equipe.getLabo() != null)
         { equipe1.setLaboID(equipe.getLabo().getId());}
@@ -117,6 +118,7 @@ public class EquipeRestController {
         equipe.getMember().forEach(member->{
 
             Chercheur newChercheur =chercheurRestClient.getChercheurById(member.getId());
+            newChercheur.setId(member.getId());
             addMember(newChercheur,equipe1.getId());
         });
 
