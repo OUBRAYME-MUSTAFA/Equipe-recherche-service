@@ -108,7 +108,10 @@ public class EquipeRestController {
         Equipe equipe1 =new Equipe(equipe.getId(),equipe.getAcro_equipe(), equipe.getIntitule(),chercheur.getId());
         System.out.println(" ************ sent = "+chercheur.getId()+" get = "+equipe1.getResponsableId());
         if(equipe.getLabo() != null)
-        { equipe1.setLaboID(equipe.getLabo().getId());}
+        {
+            equipe1.setLaboID(equipe.getLabo().getId());
+            axeRestClient.addEquipe(equipe1 ,equipe.getLabo().getId() );
+        }
         equipeRepository.save(equipe1);
         equipe.getAxes().forEach(pi->{
             Axe newAxe = axeRestClient.getAxeById(pi.getId());
@@ -123,15 +126,10 @@ public class EquipeRestController {
             addMember(newChercheur,equipe1.getId());
         });
 
+
         return   new ResponseEntity<>(equipe1, HttpStatus.CREATED);
     }
 
-//    @PostMapping("/addEquipe")
-//    public ResponseEntity<Equipe> addEquipe(@RequestBody Equipe equipe){
-//        equipe.setResponsableId(equipe.getResponsable().getId());
-//        System.out.print(equipe);
-//        return new ResponseEntity<>(equipeRepository.save(equipe), HttpStatus.CREATED);
-//    }
 
     @PutMapping("equipe/addAxe/{id}")
     public void addAxe(@RequestBody Axe axe, @PathVariable long id) {
@@ -152,6 +150,7 @@ public class EquipeRestController {
 
     @PutMapping("update")
     public ResponseEntity<Equipe> updateEquipe(@RequestBody Equipe equipe){
+
 
         return addEquipe(equipe);
 
