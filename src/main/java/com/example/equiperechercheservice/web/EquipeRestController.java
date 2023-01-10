@@ -37,8 +37,6 @@ public class EquipeRestController {
     public Equipe getEquipeById(@PathVariable(name = "id") Long  id){
         Equipe equipe = equipeRepository.findById(id).get();
         equipe.setResponsable(chercheurRestClient.getChercheurById(equipe.getResponsableId()));
-        //Customer customer = customerRestClient.getCustomerById(bill.getCustomerID());
-        //equipe.setCustomer(customer);
         equipe.getAxes().forEach(pi->{
 
             pi.setEquipe_list(null);
@@ -102,11 +100,25 @@ public class EquipeRestController {
 
 
     @PostMapping("/addEquipe")
-    public ResponseEntity<Equipe> addEquipe(@RequestBody Equipe equipe){
+    public ResponseEntity<Object> addEquipe(@RequestBody Equipe equipe){
+
+        if(equipe.getResponsable() == null){
+            System.out.println("il faut choisir un responsable  avant la creation de cette l'equipe : "+equipe.getAcro_equipe());
+            return  new ResponseEntity<>("il faut choisir un responsable  avant la creation " +
+                    "de cette  l'equipe "+equipe.getAcro_equipe(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+        if (equipe.getMember().stream().count() < 4){
+            System.out.println("il faut choisir au moins 4 membres  avant la creation de  l'equipe : "+equipe.getAcro_equipe());
+           return  new ResponseEntity<>("il faut choisir au moins 4 membres  avant la creation de  l'equipe "+equipe.getAcro_equipe(),
+                    HttpStatus.BAD_REQUEST);
+        }
+
+
         Chercheur chercheur = chercheurRestClient.getChercheurById(equipe.getResponsable().getId());
         chercheur.setId(equipe.getResponsable().getId());
         Equipe equipe1 =new Equipe(equipe.getId(),equipe.getAcro_equipe(), equipe.getIntitule(),chercheur.getId());
-        System.out.println(" ************ sent = "+chercheur.getId()+" get = "+equipe1.getResponsableId());
         if(equipe.getLabo() != null)
         {
             equipe1.setLaboID(equipe.getLabo().getId());
@@ -149,7 +161,7 @@ public class EquipeRestController {
     }
 
     @PutMapping("update")
-    public ResponseEntity<Equipe> updateEquipe(@RequestBody Equipe equipe){
+    public ResponseEntity<Object> updateEquipe(@RequestBody Equipe equipe){
 
 
         return addEquipe(equipe);
