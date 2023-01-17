@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 @FeignClient(name = "LABO-SERVICE")
 public interface AxeRestClient {
-    @GetMapping(path = "/axes/{id}")
+    @GetMapping(path = "/axe/{id}")
     public Axe getAxeById(@PathVariable("id")Long id);
 
     @GetMapping(path = "/getAxes/{name}")
